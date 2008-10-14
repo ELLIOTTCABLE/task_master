@@ -14,7 +14,7 @@ Usage
 -----
     require 'task_master'
     
-    TaskMaster.configure MyProject do |project|
+    TaskMaster.new MyProject do |project|
       project.name = 'My Project'
       project.unix = 'my_project'
       project[:echoe].project = 'my-project' # Rubyforge project name
