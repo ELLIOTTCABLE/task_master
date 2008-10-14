@@ -1,0 +1,7 @@
+lib/task_master/tasking.rb
+lib/task_master.rb
+Rakefile.rb
+README.markdown
+spec/spec_helper.rb
+spec/task_master_spec.rb
+.manifest
