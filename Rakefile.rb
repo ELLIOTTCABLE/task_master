@@ -64,7 +64,7 @@ begin
       # release the fix as it's own gem at some point in the near future.
       require 'stringray/core_ext/spec/rake/verify_rcov'
       RCov::VerifyTask.new(:verify) do |t|
-        t.threshold = 95.0
+        t.threshold = 50.0
         t.index_html = File.join('meta', 'coverage', 'index.html')
         t.require_exact_threshold = false
       end
@@ -104,6 +104,26 @@ begin
                    '--readme', 'README.markdown']
     end
     
+    class Numeric
+      def pretty_inspect(decimal_points = 3)
+        bits = self.to_s.split('.')
+        bits[0] = bits[0].reverse.scan(/\d{1,3}/).join(',').reverse
+        bits[1] = bits[1][0...decimal_points] if bits[1]
+        bits.join('.')
+      end
+    end
+    
+    task :verify do
+      documentation_threshold = 50.0
+      doc = YARD::CLI::Yardoc.new; doc.generate = false; doc.run
+      
+      percent_documented = (
+        YARD::Registry.all.select {|o| !o.docstring.empty? }.size /
+        YARD::Registry.all.size.to_f
+      ) * 100
+      puts "Documentation coverage: #{percent_documented.pretty_inspect(1)}% (threshold: #{documentation_threshold.pretty_inspect(1)}%)"
+    end
+    
     task :open do
       system 'open ' + File.join('meta', 'documentation', 'index.html') if PLATFORM['darwin']
     end
@@ -125,6 +145,7 @@ end
 desc 'Check everything over before commiting'
 task :aok => [:'documentation:generate', :'documentation:open',
               :'package:manifest', :'package:package',
-              :'coverage:run', :'coverage:open', :'coverage:verify']
+              :'coverage:run', :'coverage:open',
+              :'coverage:verify', :'documentation:verify']
 
 task :ci => [:'documentation:generate', :'coverage:run', :'coverage:verify']
