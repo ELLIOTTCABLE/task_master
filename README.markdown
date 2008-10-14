@@ -12,7 +12,23 @@ easily write your own task groups for any tools that it doesn't support.
 
 Usage
 -----
-FIXME: Usage summary
+    require 'task_master'
+    
+    TaskMaster.configure MyProject do |project|
+      project.name = 'My Project'
+      project.unix = 'my_project'
+      project[:echoe].project = 'my-project' # Rubyforge project name
+      project.libs = ['lib', 'othershit']
+      project.file[:rakefile] = 'Rakefile.rb'
+      project.file[:manifest] = '.manifest'
+      project.file[:readme] = 'README.markdown'
+      project[:yard].markup = 'markdown' # YARD readme markup
+      project[:rcov].threshold = 95.0
+    end
+    
+    tasking :package, 'Echoe'
+    tasking :documentation, 'YARD'
+    tasking :specs, 'RSpec'
 
 Installation
 ------------
